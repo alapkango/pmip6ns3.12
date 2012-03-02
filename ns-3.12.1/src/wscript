@@ -63,6 +63,9 @@ all_modules = [
     'point-to-point-layout',
     'csma-layout',
     'template',
+	#PMIPv6 Implementation by CHY {
+	'pmip6',
+	#}
     ]
 
 def set_options(opt):
