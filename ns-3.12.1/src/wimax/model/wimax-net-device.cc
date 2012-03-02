@@ -643,4 +643,13 @@ WimaxNetDevice::AddLinkChangeCallback (Callback<void> callback)
    */
   //NS_FATAL_ERROR ("Not implemented-- please implement and contribute a patch");
 }
+
+// PMIPv6 Implementation by CHY {
+void WimaxNetDevice::SetNewHostCallback (Callback<void, Mac48Address, Mac48Address, uint8_t> newHost)
+{
+  NS_LOG_FUNCTION (this);
+  
+  m_newHostCallback = newHost;
+}
+//}
 } // namespace ns3

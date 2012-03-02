@@ -779,6 +779,21 @@ BaseStationNetDevice::DoReceive (Ptr<Packet> packet)
                 DsaAck dsaAck;
                 packet->RemoveHeader (dsaAck);
                 GetServiceFlowManager ()->ProcessDsaAck (dsaAck, cid);
+				
+				//PMIPv6 Implementatioin by CHY {
+				if (!m_newHostCallback.IsNull ())
+				  {
+					SSRecord *ssRecord = GetSSManager ()->GetSSRecord (cid);
+					
+					if (ssRecord->GetRangingStatus () == WimaxNetDevice::RANGING_STATUS_SUCCESS &&
+					     ssRecord->GetIsAttachNotified () == false)
+					  {
+						ssRecord->SetIsAttachNotified (true);
+						NS_LOG_DEBUG ("DSA SUCCEEDED " << ssRecord->GetMacAddress () << " " << Mac48Address::ConvertFrom (GetAddress ()));
+					    m_newHostCallback (ssRecord->GetMacAddress (), Mac48Address::ConvertFrom (GetAddress ()), 5 /* WIMAX */);
+					  }
+				  }
+				//}
                 break;
               }
             default:

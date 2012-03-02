@@ -125,6 +125,13 @@ private:
   uint16_t m_sfTransactionId;
   uint8_t m_dsaRspRetries;
   DsaRsp m_dsaRsp;
+
+  //PMIPv6 Implementation by CHY
+  bool m_isAttachNotified;
+public:
+  bool GetIsAttachNotified() const;
+  void SetIsAttachNotified(bool);
+  //}
 };
 
 } // namespace ns3

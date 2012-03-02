@@ -63,6 +63,10 @@ SSRecord::Initialize (void)
   m_serviceFlows = new std::vector<ServiceFlow*> ();
   m_dsaRsp = DsaRsp ();
   m_broadcast = 0;
+  
+  //PMIPv6 Implementation by CHY
+  m_isAttachNotified = false;
+  //}
 }
 
 SSRecord::~SSRecord (void)
@@ -343,5 +347,19 @@ SSRecord::GetDsaRsp (void) const
 {
   return m_dsaRsp;
 }
+
+//PMIPv6 Implementation by CHY
+bool
+SSRecord::GetIsAttachNotified (void) const
+{
+  return m_isAttachNotified;
+}
+
+void
+SSRecord::SetIsAttachNotified (bool ian)
+{
+  m_isAttachNotified = ian;
+}
+//}
 
 } // namespace ns3

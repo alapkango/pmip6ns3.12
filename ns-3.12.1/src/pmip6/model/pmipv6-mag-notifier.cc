@@ -223,6 +223,15 @@ void Pmipv6MagNotifier::NotifyNewAggregate ()
                       
                       continue;
                     }
+                    
+                  Ptr<WimaxNetDevice> wDev2 = dev->GetObject<WimaxNetDevice> ();
+                  
+                  if (wDev2)
+                    {
+                      wDev2->SetNewHostCallback (MakeCallback (&Pmipv6MagNotifier::HandleNewNode, this));
+                      
+                      continue;
+                    }
                 }
             }
         }
