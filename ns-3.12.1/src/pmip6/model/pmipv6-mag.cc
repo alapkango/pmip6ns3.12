@@ -115,6 +115,15 @@ void Pmipv6Mag::NotifyNewAggregate ()
 
                   rmac->SetNewHostCallback (MakeCallback (&Pmipv6Mag::HandleNewNode, this));
                 }
+
+              Ptr<WimaxNetDevice> wDev2 = dev->GetObject<WimaxNetDevice> ();
+
+              if (wDev2)
+                {
+                  wDev2->SetNewHostCallback (MakeCallback (&Pmipv6Mag::HandleNewNode, this));
+
+                  continue;
+                }
             }
         }
 	  else

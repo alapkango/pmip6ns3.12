@@ -230,6 +230,10 @@ public:
   bool IsPromisc (void);
   void NotifyPromiscTrace (Ptr<Packet> p);
 
+  // PMIPv6 Implementation by CHY {
+  virtual void SetNewHostCallback (Callback<void, Mac48Address, Mac48Address, uint8_t> newHost);
+  //}
+
 private:
   WimaxNetDevice (const WimaxNetDevice &);
   WimaxNetDevice & operator= (const WimaxNetDevice &);
@@ -284,6 +288,10 @@ private:
 
   Ptr<Object> m_mobility;
 
+  // PMIPv6 Implementation by CHY {
+protected:
+  Callback<void, Mac48Address, Mac48Address, uint8_t> m_newHostCallback;
+  //}
 };
 
 } // namespace ns3

@@ -286,6 +286,11 @@ BSLinkManager::AcceptRanging (Cid cid, RngRsp *rngrsp, SSRecord *ssRecord)
   ssRecord->SetRangingStatus (WimaxNetDevice::RANGING_STATUS_SUCCESS);
 
   ssRecord->DisablePollForRanging ();
+
+  //PMIPv6 Implementation
+  // CHY {
+  ssRecord->SetIsAttachNotified(false);
+  //}
 }
 
 void
