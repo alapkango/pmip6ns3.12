@@ -342,6 +342,31 @@ WimaxNetDevice::ForwardUp (Ptr<Packet> packet, const Mac48Address &source, const
   LlcSnapHeader llc;
   packet->RemoveHeader (llc);
   m_forwardUp (this, packet, llc.GetType (), source);
+
+  //PMIPv6 Implementation by CHY
+  if (!m_promiscRx.IsNull ())
+    {
+	  enum NetDevice::PacketType type;
+	  if (dest.IsBroadcast ())
+		{
+		  type = NetDevice::PACKET_BROADCAST;
+		}
+	  else if (dest.IsGroup ())
+		{
+		  type = NetDevice::PACKET_MULTICAST;
+		}
+	  else if (dest == GetAddress ())
+		{
+		  type = NetDevice::PACKET_HOST;
+		}
+	  else
+		{
+		  type = NetDevice::PACKET_OTHERHOST;
+		}
+
+  	  m_promiscRx (this, packet, llc.GetType (), source, dest, type);
+    }
+  //}
 }
 
 void
@@ -567,7 +592,12 @@ WimaxNetDevice::NotifyPromiscTrace (Ptr<Packet> p)
 bool
 WimaxNetDevice::SupportsSendFrom (void) const
 {
-  return false;
+  //PMIPv6 Implementation by CHY{
+  //---OLD---
+  //return false;
+  //---------
+  return true;
+  //}
 }
 
 void
