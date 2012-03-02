@@ -81,12 +81,12 @@ void Ipv6TunnelL4Protocol::DoDispose ()
 
   m_node = 0;
   
-  for ( TunnelListI i = m_tunnelList.begin(); i != m_tunnelList.end(); i++ )
+  for ( TunnelMapI i = m_tunnelMap.begin(); i != m_tunnelMap.end(); i++ )
     {
-	  (*i) = 0;
+	  i->second = 0;
 	}
 	
-  m_tunnelList.clear();
+  m_tunnelMap.clear();
   
   Ipv6L4Protocol::DoDispose ();
 }
@@ -148,6 +148,16 @@ enum Ipv6L4Protocol::RxStatus_e Ipv6TunnelL4Protocol::Receive (Ptr<Packet> packe
   Ptr<Ipv6L3Protocol> ipv6 = GetNode()->GetObject<Ipv6L3Protocol>();
   NS_ASSERT (ipv6 != 0);
   
+  /**
+   * Check whether the packet belongs to one of tunnels
+   */
+  Ptr<TunnelNetDevice> tdev = GetTunnelDevice (src);   
+  if (tdev == 0)
+    {
+      NS_LOG_DEBUG ("The packet does not associate any tunnel device");
+      return Ipv6L4Protocol::RX_OK;
+    }
+  
   Ptr<Packet> p = packet->Copy();
   
   Ipv6Header innerHeader;
@@ -194,25 +204,24 @@ uint16_t Ipv6TunnelL4Protocol::AddTunnel(Ipv6Address remote, Ipv6Address local)
   NS_LOG_FUNCTION (this << remote << local);
   
   //Search existing tunnel device
-  Ptr<TunnelNetDevice> dev = GetTunnelDevice(remote);
+  TunnelMapI it = m_tunnelMap.find (remote);
+  Ptr<TunnelNetDevice> dev = 0;
   
-  if (dev == 0)
+  if (it == m_tunnelMap.end ())
     {
-      //Search freed tunnel device
-	  dev = GetTunnelDevice (Ipv6Address::GetZero ());
-	  
-	  if (dev == 0)
-	    {
-		  dev = CreateObject<TunnelNetDevice> ();
-		  dev->SetAddress (Mac48Address::Allocate ());
-		  m_node->AddDevice (dev);
-		  m_tunnelList.push_back (dev);
-		}
-		
+      dev = CreateObject<TunnelNetDevice> ();
+      dev->SetAddress (Mac48Address::Allocate ());
+      m_node->AddDevice (dev);
+      m_tunnelMap.insert (std::pair<Ipv6Address, Ptr<TunnelNetDevice> > (remote, dev));
+      
 	  dev->SetRemoteAddress(remote);
 	  dev->SetLocalAddress(local);
-	}
-	
+    }
+  else
+    {
+      dev = it->second;
+    }
+    
   dev->IncreaseRefCount ();
 	
   Ptr<Ipv6> ipv6 = m_node->GetObject<Ipv6> ();
@@ -239,13 +248,17 @@ void Ipv6TunnelL4Protocol::RemoveTunnel(Ipv6Address remote)
   
   Ptr<TunnelNetDevice> dev = GetTunnelDevice(remote);
 
-  if( dev )
+  if (dev)
     {
-	  dev->DecreaseRefCount();
+	  dev->DecreaseRefCount ();
 	  
-	  if(dev->GetRefCount() == 0)
+	  if (dev->GetRefCount() == 0)
 	    {
-		  dev->SetRemoteAddress(Ipv6Address::GetZero());
+		  TunnelMapI it = m_tunnelMap.find (remote);
+          
+          it->second = 0;
+          
+          m_tunnelMap.erase (it);
 		}
 	}
 }
@@ -258,35 +271,20 @@ uint16_t  Ipv6TunnelL4Protocol::ModifyTunnel(Ipv6Address remote, Ipv6Address new
   NS_ASSERT (dev != 0);
   NS_ASSERT (dev->GetRefCount() > 0);
 	  
-  if (dev->GetRefCount() > 1)
-	{
-	  RemoveTunnel (remote);
-	  
-	  return AddTunnel (newRemote, local);
-	}
-	
-  dev->SetRemoteAddress (newRemote);
-  
-  Ptr<Ipv6> ipv6 = m_node->GetObject<Ipv6> ();
-  
-  int32_t ifIndex = ipv6->GetInterfaceForDevice (dev);
-  
-  NS_ASSERT (ifIndex >= 0);
-  
-  return ifIndex;
+  RemoveTunnel (remote);
+  return AddTunnel (newRemote, local);
 }
 
 Ptr<TunnelNetDevice> Ipv6TunnelL4Protocol::GetTunnelDevice(Ipv6Address remote)
 {
   NS_LOG_FUNCTION ( this << remote );
   
-  for ( TunnelListI i = m_tunnelList.begin(); i != m_tunnelList.end(); i++ )
+  TunnelMapI it = m_tunnelMap.find (remote);
+  
+  if (it != m_tunnelMap.end ())
     {
-	  if(remote == (*i)->GetRemoteAddress())
-	    {
-		  return (*i);
-		}
-	}
+      return it->second;
+    }
 
   return 0;
 }

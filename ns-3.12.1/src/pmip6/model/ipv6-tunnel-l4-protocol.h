@@ -123,15 +123,15 @@ protected:
   virtual void DoDispose ();
   
 private:
-  typedef std::list< Ptr<TunnelNetDevice> > TunnelList;
-  typedef std::list< Ptr<TunnelNetDevice> >::iterator TunnelListI;
+  typedef std::map<Ipv6Address, Ptr<TunnelNetDevice> > TunnelMap;
+  typedef std::map<Ipv6Address, Ptr<TunnelNetDevice> >::iterator TunnelMapI;
   
   /**
    * \brief The node.
    */
   Ptr<Node> m_node;
   
-  TunnelList m_tunnelList;
+  TunnelMap m_tunnelMap;
   
 };
 
