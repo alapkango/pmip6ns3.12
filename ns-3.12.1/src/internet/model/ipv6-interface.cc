@@ -217,6 +217,8 @@ Ipv6InterfaceAddress Ipv6Interface::GetLinkLocalAddress () const
 
   for (Ipv6InterfaceAddressListCI it = m_addresses.begin (); it != m_addresses.end (); ++it)
     {
+	  //DEBUG
+	  NS_LOG_INFO ("Addr: " << (*it).GetAddress ());
       if ((*it).GetAddress ().IsLinkLocal ())
         {
           return (*it);
@@ -296,8 +298,14 @@ Ipv6InterfaceAddress Ipv6Interface::GetAddressMatchingDestination (Ipv6Address d
         }
     }
 
-  /*  NS_ASSERT_MSG (false, "Not matching address."); */
-  Ipv6InterfaceAddress ret;
+  //PMIPv6 Implementation by CHY {
+  // If no matching global address for NS source address
+  // we use Link-Local Address instead
+  Ipv6InterfaceAddress ret = *m_addresses.begin();
+  //----OLD-----
+  // /*  NS_ASSERT_MSG (false, "Not matching address."); */
+  // Ipv6InterfaceAddress ret;
+  //}
   return ret; /* quiet compiler */
 }
 
