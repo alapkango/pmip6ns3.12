@@ -613,7 +613,13 @@ BaseStationNetDevice::DoSend (Ptr<Packet> packet,
 
   if (protocolNumber != 2048 || serviceFlow == 0)
     {
-      serviceFlow = *GetServiceFlowManager ()->GetServiceFlows (ServiceFlow::SF_TYPE_ALL).begin ();
+      //serviceFlow = *GetServiceFlowManager ()->GetServiceFlows (ServiceFlow::SF_TYPE_ALL).begin ();
+      std::vector<ServiceFlow*> serviceFlows = GetServiceFlowManager ()->GetServiceFlows (ServiceFlow::SF_TYPE_ALL);
+      
+      if (serviceFlows.size () > 0)
+        {
+          serviceFlow = *serviceFlows.begin ();
+        }
     }
 
   if (serviceFlow == 0)
