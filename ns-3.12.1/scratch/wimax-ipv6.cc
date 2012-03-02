@@ -185,10 +185,11 @@ int main (int argc, char *argv[])
 
   
   //wimax.EnableLogComponents ();  // Turn on all wimax logging
-//  LogLevel logAll = static_cast<LogLevel>(LOG_LEVEL_ALL|LOG_PREFIX_TIME|LOG_PREFIX_NODE);
+  //LogLevel logAll = static_cast<LogLevel>(LOG_LEVEL_ALL|LOG_PREFIX_TIME|LOG_PREFIX_NODE);
+  LogLevel logInfo = static_cast<LogLevel>(LOG_LEVEL_INFO|LOG_PREFIX_TIME|LOG_PREFIX_NODE);
 
-//  LogComponentEnable ("Udp6Client", logAll);
-//  LogComponentEnable ("Udp6Server", logAll);
+  //LogComponentEnable ("Udp6Client", logAll);
+  LogComponentEnable ("Udp6Server", logInfo);
 
   /*------------------------------*/
   /* Create a Udp6 application to send ICMPv6 echo request from node zero to
