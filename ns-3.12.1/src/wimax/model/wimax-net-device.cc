@@ -638,6 +638,9 @@ WimaxNetDevice::AddLinkChangeCallback (Callback<void> callback)
    * by the IP/ARP layer to flush the ARP cache and by IPv6 stack
    * to flush NDISC cache whenever the link goes up.
    */
-  NS_FATAL_ERROR ("Not implemented-- please implement and contribute a patch");
+  /**
+   * Following code prevent working IPv6 under Wimax
+   */
+  //NS_FATAL_ERROR ("Not implemented-- please implement and contribute a patch");
 }
 } // namespace ns3
