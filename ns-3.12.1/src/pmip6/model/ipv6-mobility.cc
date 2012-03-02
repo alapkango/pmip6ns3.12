@@ -78,21 +78,24 @@ uint8_t Ipv6Mobility::ProcessOptions(Ptr<Packet> packet, uint8_t offset, uint8_t
 {
   NS_LOG_FUNCTION (this << packet << length);
   Ptr<Packet> p = packet->Copy ();
+  p->RemoveAtStart(offset);
+  
   Ptr<Ipv6MobilityOptionDemux> ipv6MobilityOptionDemux = GetNode()->GetObject<Ipv6MobilityOptionDemux>();
   NS_ASSERT(ipv6MobilityOptionDemux != 0);
   
   Ptr<Ipv6MobilityOption> ipv6MobilityOption = 0;
   
   uint8_t processedSize = 0;
-  const uint8_t *data = p->PeekData();
+  uint32_t size = p->GetSize ();
+  uint8_t *data = new uint8_t[size];
+  p->CopyData (data, size);
+  
   uint8_t optType;
   uint8_t optLen;
-  
-  p->RemoveAtStart(offset);
 
   while ( processedSize < length )
     {
-      optType = *(data + offset + processedSize);
+      optType = *(data + processedSize);
 	  
 	  ipv6MobilityOption = ipv6MobilityOptionDemux -> GetOption ( optType );
 	  
@@ -104,7 +107,7 @@ uint8_t Ipv6Mobility::ProcessOptions(Ptr<Packet> packet, uint8_t offset, uint8_t
 			}
 		  else
 		    {
-			  optLen = *(data + offset + processedSize + 1) + 2;
+			  optLen = *(data + processedSize + 1) + 2;
 			}
 			
 		  NS_LOG_LOGIC("No matched Ipv6MobilityOption for type=" << (uint32_t)optType );
@@ -117,7 +120,9 @@ uint8_t Ipv6Mobility::ProcessOptions(Ptr<Packet> packet, uint8_t offset, uint8_t
 	  processedSize += optLen;
 	  p->RemoveAtStart(optLen);
     }
-	
+
+  delete [] data;
+  
   return processedSize;
 }
 
