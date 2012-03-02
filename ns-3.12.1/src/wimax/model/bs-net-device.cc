@@ -678,6 +678,10 @@ BaseStationNetDevice::DoReceive (Ptr<Packet> packet)
   FragmentationSubheader fragSubhdr;
   bool fragmentation = false;  // it becames true when there is a fragmentation subheader
 
+  //BUG FIX
+  MacHeaderType headerType;
+  packet->RemoveHeader (headerType);
+  //}
   packet->RemoveHeader (gnrcMacHdr);
   if (gnrcMacHdr.GetHt () == MacHeaderType::HEADER_TYPE_GENERIC)
     {

@@ -739,6 +739,10 @@ SubscriberStationNetDevice::DoReceive (Ptr<Packet> packet)
   RngRsp rngrsp;
   Cid cid;
   uint32_t pktSize = packet->GetSize ();
+  //BUG FIX
+  MacHeaderType headerType;
+  packet->RemoveHeader (headerType);
+  //}
   packet->RemoveHeader (gnrcMacHdr);
   FragmentationSubheader fragSubhdr;
   bool fragmentation = false;  // it becames true when there is a fragmentation subheader
