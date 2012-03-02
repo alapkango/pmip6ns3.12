@@ -1,4 +1,4 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
+/* -*-  Mode: C++; c-file-style: "gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2007-2009 Strasbourg University
  *
@@ -31,6 +31,12 @@ namespace ns3
 
 class Header;
 class Packet;
+
+//UDP6 Implementation by CHY {
+class Ipv6Interface;
+class Ipv6Header;
+class NetDevice;
+//}
 
 /**
  * \class Ipv6EndPoint
@@ -94,11 +100,21 @@ public:
    */
   void SetPeer (Ipv6Address addr, uint16_t port);
 
+  //UDP6 Implementation by CHY {
+  void BindToNetDevice (Ptr<NetDevice> netdevice);
+  Ptr<NetDevice> GetBoundNetDevice (void);
+  //}
+  
   /**
    * \brief Set the reception callback.
    * \param callback callback function
    */
-  void SetRxCallback (Callback<void, Ptr<Packet>, Ipv6Address, uint16_t> callback);
+  //UDP6 Implementation by CHY {
+  //---OLD--
+  //void SetRxCallback (Callback<void, Ptr<Packet>, Ipv6Address, uint16_t> callback);
+  //---------
+  void SetRxCallback (Callback<void, Ptr<Packet>, Ipv6Address, Ipv6Address, uint16_t, uint16_t, Ptr<Ipv6Interface> > callback);
+  //}
 
   /**
    * \brief Set the ICMP callback.
@@ -118,7 +134,12 @@ public:
    * \param addr source address
    * \param port source port
    */
-  void ForwardUp (Ptr<Packet> p, Ipv6Address addr, uint16_t port);
+  //UDP6 Implementation by CHY {
+  //---OLD--
+  //void ForwardUp (Ptr<Packet> p, Ipv6Address addr, uint16_t port);
+  //---------
+  void ForwardUp (Ptr<Packet> p, Ipv6Address saddr, Ipv6Address daddr, uint16_t sport, uint16_t dport, Ptr<Ipv6Interface> incomingInterface);
+  //}
 
   /**
    * \brief Function called from an L4Protocol implementation
@@ -133,13 +154,25 @@ public:
                     uint8_t code, uint32_t info);
 
 private:
+  //UDP6 Implementation by CHY {
+  //---OLD--
   /**
    * \brief ForwardUp wrapper.
    * \param p packet
    * \param saddr source IPv6 address
    * \param sport source port
-   */
-  void DoForwardUp (Ptr<Packet> p, Ipv6Address saddr, uint16_t sport);
+   */ 
+  //void DoForwardUp (Ptr<Packet> p, Ipv6Address saddr, uint16_t sport);
+  //---------
+  /**
+   * \brief ForwardUp wrapper.
+   * \param p packet
+   * \param saddr source IPv6 address
+   * \param sport source port
+   * \param incomingInterface incoming Ipv6Interface
+   */ 
+  void DoForwardUp (Ptr<Packet> p, Ipv6Address saddr, Ipv6Address daddr, uint16_t sport, uint16_t dport, Ptr<Ipv6Interface> incomingInterface);
+  //}
 
   /**
    * \brief ForwardIcmp wrapper.
@@ -172,10 +205,22 @@ private:
    */
   uint16_t m_peerPort;
 
+  //UDP6 Implementation by CHY {
+  /**
+   * \brief The bound netdevice
+   */
+  Ptr<NetDevice> m_boundnetdevice;
+  //}
+
   /**
    * \brief The RX callback.
    */
-  Callback<void, Ptr<Packet>, Ipv6Address, uint16_t> m_rxCallback;
+  //UDP6 Implementation by CHY {
+  //---OLD--
+  //Callback<void, Ptr<Packet>, Ipv6Address, uint16_t> m_rxCallback;
+  //---------
+  Callback<void, Ptr<Packet>, Ipv6Address, Ipv6Address, uint16_t, uint16_t, Ptr<Ipv6Interface> > m_rxCallback;
+  //}
 
   /**
    * \brief The ICMPv6 callback.
