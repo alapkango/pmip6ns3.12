@@ -202,9 +202,9 @@ int main (int argc, char *argv[])
   
   positionAlloc = CreateObject<ListPositionAllocator> ();
   
-  positionAlloc->Add (Vector (0.0, 0.0, 0.0));   //LMA
-  positionAlloc->Add (Vector (0.0, 40.0, 0.0)); //MAG1
-  positionAlloc->Add (Vector (100.0, 40.0, 0.0));  //MAG2
+  positionAlloc->Add (Vector (0.0, -20.0, 0.0));   //LMA
+  positionAlloc->Add (Vector (-50.0, 20.0, 0.0)); //MAG1
+  positionAlloc->Add (Vector (50.0, 20.0, 0.0));  //MAG2
   
   mobility.SetPositionAllocator (positionAlloc);
   mobility.SetMobilityModel ("ns3::ConstantPositionMobilityModel");
@@ -213,7 +213,7 @@ int main (int argc, char *argv[])
   
   positionAlloc = CreateObject<ListPositionAllocator> ();
   
-  positionAlloc->Add (Vector (75.0, 0.0, 0.0));   //CN
+  positionAlloc->Add (Vector (75.0, -20.0, 0.0));   //CN
   
   mobility.SetPositionAllocator (positionAlloc);
   mobility.SetMobilityModel ("ns3::ConstantPositionMobilityModel");
@@ -222,8 +222,8 @@ int main (int argc, char *argv[])
   
   positionAlloc = CreateObject<ListPositionAllocator> ();
   
-  positionAlloc->Add (Vector (0.0, 60.0, 0.0)); //MAG1AP
-  positionAlloc->Add (Vector (100.0, 60.0, 0.0));  //MAG2AP
+  positionAlloc->Add (Vector (-50.0, 40.0, 0.0)); //MAG1AP
+  positionAlloc->Add (Vector (50.0, 40.0, 0.0));  //MAG2AP
   
   mobility.SetPositionAllocator (positionAlloc);
   mobility.SetMobilityModel ("ns3::ConstantPositionMobilityModel");
@@ -275,7 +275,7 @@ int main (int argc, char *argv[])
   //setting station
   positionAlloc = CreateObject<ListPositionAllocator> ();
   
-  positionAlloc->Add (Vector (0.0, 80.0, 0.0)); //STA
+  positionAlloc->Add (Vector (-50.0, 60.0, 0.0)); //STA
   
   mobility.SetPositionAllocator (positionAlloc);
   mobility.SetMobilityModel ("ns3::ConstantVelocityMobilityModel");  
