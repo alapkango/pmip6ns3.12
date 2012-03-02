@@ -183,6 +183,12 @@ def build(bld):
         'helper/ipv6-address-helper.cc',
         'helper/ipv6-interface-container.cc',
         'helper/ipv6-routing-helper.cc',
+		#UDP6 implementation by CHY {
+        'model/udp6-l4-protocol.cc',
+        'model/udp6-socket-factory.cc',
+		'model/udp6-socket-factory-impl.cc',
+		'model/udp6-socket-impl.cc',
+		#}
         ]
 
     internet_test = bld.create_ns3_module_test_library('internet')
@@ -193,9 +199,6 @@ def build(bld):
         'test/ipv4-list-routing-test-suite.cc',
         'test/ipv4-packet-info-tag-test-suite.cc',
         'test/ipv4-raw-test.cc',
-        'test/ipv4-fragmentation-test.cc',
-        'test/error-channel.cc',
-        'test/error-net-device.cc',
         'test/ipv4-test.cc',
         'test/ipv6-extension-header-test-suite.cc',
         'test/ipv6-list-routing-test-suite.cc',
@@ -275,6 +278,10 @@ def build(bld):
         'helper/ipv6-address-helper.h',
         'helper/ipv6-interface-container.h',
         'helper/ipv6-routing-helper.h',
+		#UDP6 implementation by CHY {
+        'model/udp6-l4-protocol.h',
+        'model/udp6-socket-factory.h',
+		#}
        ]
 
     if bld.env['NSC_ENABLED']:

@@ -1,4 +1,4 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
+/* -*-  Mode: C++; c-file-style: "gnu"; indent-tabs-mode:nil; -*- */
 /*
  * Copyright (c) 2007-2009 Strasbourg University
  *
@@ -23,6 +23,12 @@
 #include "ns3/simulator.h"
 
 #include "ipv6-end-point.h"
+
+//UDP6 Implementation by CHY {
+#include "ns3/ipv6-header.h"
+#include "ipv6-interface.h"
+#include "ns3/net-device.h"
+//}
 
 namespace ns3
 {
@@ -81,7 +87,27 @@ void Ipv6EndPoint::SetPeer (Ipv6Address addr, uint16_t port)
   m_peerPort = port;
 }
 
-void Ipv6EndPoint::SetRxCallback (Callback<void, Ptr<Packet>, Ipv6Address, uint16_t> callback)
+//UDP6 Implementation by CHY {
+void
+Ipv6EndPoint::BindToNetDevice (Ptr<NetDevice> netdevice)
+{
+  m_boundnetdevice = netdevice;
+  return;
+}
+
+Ptr<NetDevice> 
+Ipv6EndPoint::GetBoundNetDevice (void)
+{
+ return m_boundnetdevice;
+}
+//}
+
+//UDP6 Implementation by CHY {
+//---OLD--
+//void Ipv6EndPoint::SetRxCallback (Callback<void, Ptr<Packet>, Ipv6Address, uint16_t> callback)
+//---------
+void Ipv6EndPoint::SetRxCallback (Callback<void, Ptr<Packet>, Ipv6Address, Ipv6Address, uint16_t, uint16_t, Ptr<Ipv6Interface> > callback)
+//}
 {
   m_rxCallback = callback;
 }
@@ -96,11 +122,21 @@ void Ipv6EndPoint::SetDestroyCallback (Callback<void> callback)
   m_destroyCallback = callback;
 }
 
-void Ipv6EndPoint::ForwardUp (Ptr<Packet> p, Ipv6Address addr, uint16_t port)
+//UDP6 Implementation by CHY {
+//---OLD--
+//void Ipv6EndPoint::ForwardUp (Ptr<Packet> p, Ipv6Address addr, uint16_t port)
+//---------
+void Ipv6EndPoint::ForwardUp (Ptr<Packet> p, Ipv6Address saddr, Ipv6Address daddr, uint16_t sport, uint16_t dport, Ptr<Ipv6Interface> incomingInterface)
+//}
 {
   if (!m_rxCallback.IsNull ())
     {
-      m_rxCallback (p, addr, port);
+	  //UDP6 Implementation by CHY {
+	  //---OLD--
+	  //m_rxCallback (p, addr, port);
+	  //---------
+      m_rxCallback (p, saddr, daddr, sport, dport, incomingInterface);
+	  //}
     }
 }
 
@@ -114,9 +150,19 @@ void Ipv6EndPoint::ForwardIcmp (Ipv6Address src, uint8_t ttl, uint8_t type,
     }
 }
 
-void Ipv6EndPoint::DoForwardUp (Ptr<Packet> p, Ipv6Address saddr, uint16_t sport)
+//UDP6 Implementation by CHY {
+//---OLD--
+//void Ipv6EndPoint::DoForwardUp (Ptr<Packet> p, Ipv6Address saddr, uint16_t sport)
+//---------
+void Ipv6EndPoint::DoForwardUp (Ptr<Packet> p, Ipv6Address saddr, Ipv6Address daddr, uint16_t sport, uint16_t dport, Ptr<Ipv6Interface> incomingInterface)
+//}
 {
-  m_rxCallback (p, saddr, sport);
+  //UDP6 Implementation by CHY {
+  //---OLD--
+  //m_rxCallback (p, addr, port);
+  //---------
+  m_rxCallback (p, saddr, daddr, sport, dport, incomingInterface);
+  //}
 }
 
 void Ipv6EndPoint::DoForwardIcmp (Ipv6Address src, uint8_t ttl, uint8_t type, 
