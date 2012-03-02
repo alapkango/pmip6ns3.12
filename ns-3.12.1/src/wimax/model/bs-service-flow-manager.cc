@@ -150,6 +150,10 @@ BsServiceFlowManager::ScheduleDsaRsp (ServiceFlow *serviceFlow, Cid cid)
       else
         {
           NS_LOG_DEBUG ("Service flows could not be initialized!");
+          
+          //BUGFix
+          return;
+          //}
         }
     }
 
