@@ -217,8 +217,6 @@ Ipv6InterfaceAddress Ipv6Interface::GetLinkLocalAddress () const
 
   for (Ipv6InterfaceAddressListCI it = m_addresses.begin (); it != m_addresses.end (); ++it)
     {
-	  //DEBUG
-	  NS_LOG_INFO ("Addr: " << (*it).GetAddress ());
       if ((*it).GetAddress ().IsLinkLocal ())
         {
           return (*it);
